@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CitiBankTest Project">
+	<suite name="CitiBankTest Test Suite">
+		<test name="Tests Using firefox" preserve-order="true">
+			<parameter name="browser" value="firefox" />
+			<classes>
+				<class name="com.tests.FacebookTest" />
+			</classes>
+		</test>
+
+		<listeners>
+			<listener class-name="atu.testng.reports.listeners.ATUReportsListener">
+			</listener>
+			<listener class-name="atu.testng.reports.listeners.ConfigurationListener">
+			</listener>
+			<listener class-name="atu.testng.reports.listeners.MethodListener">
+			</listener>
+		</listeners>
+	</suite>
+</project>
