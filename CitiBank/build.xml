@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CitiBank Project " default="run" basedir=".">
+
+	<property environment="env" />
+	<property name="home" value="${basedir}" />
+	<property name="jar" value="${basedir}/jar" />
+	<property name="build" value="${home}/build" />
+	<property name="src" value="${home}/src" />
+	<property name="result" value="test-output" />
+	<property name="atu_result" value="${home}/ATU_Report" />
+
+	<target name="setClassPath" unless="test.classpath">
+		<path id="classpath_jars">
+			<fileset dir="${jar}" includes="*.jar" />
+		</path>
+		<pathconvert pathsep=":" property="test.classpath" refid="classpath_jars" />
+	</target>
+
+
+	<target name="init" depends="setClassPath">
+		<tstamp>
+			<format property="start.time" pattern="MM/dd/yyyy hh:mm aa" />
+		</tstamp>
+		<condition property="ANT" value="${env.ANT_HOME}/bin/ant.bat" else="${env.ANT_HOME}/bin/ant">
+			<os family="windows" />
+		</condition>
+		<taskdef name="testng" classpath="${test.classpath}" classname="org.testng.TestNGAntTask" />
+	</target>
+
+
+	<!-- clean -->
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${atu_result}" />
+		<!--<delete dir="${home}/XSLT_Reports" />-->
+	</target>
+
+	<!-- compile -->
+	<target name="compile" depends="init, clean">
+
+		<!--<delete includeemptydirs="true" quiet="true">
+			<fileset dir="C:/HasanReport/XSLT_Reports" includes="**/*" />
+		</delete>-->
+
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="C:/HasanReport/CitiBankReport/ATU_Report" includes="**/*" />
+		</delete>
+
+		<!--<mkdir dir="C:/HasanReport/XSLT_Reports" />-->
+		<mkdir dir="C:/HasanReport/CitiBankReport/ATU_Report" />
+
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${build}" includes="**/*" />
+		</delete>
+		<echo message="making directory..." />
+		<mkdir dir="${build}" />
+		<echo message="classpath------: ${test.classpath}" />
+		<echo message="compiling..." />
+		<javac debug="true" destdir="${build}" srcdir="${src}" target="1.8" classpath="${test.classpath}" includeantruntime="false">
+		</javac>
+	</target>
+
+	<!-- run -->
+	<target name="run" depends="compile">
+		<testng classpath="${test.classpath}:${build}" suitename="CitiBank Suite">
+			<xmlfileset dir="${home}" includes="testng.xml" />
+		</testng>
+
+		<copy todir="C:/HasanReport/CitiBankReport/ATU_Report">
+			<fileset dir="${home}/ATU_Report" includes="**" />
+		</copy>
+		<delete dir="${build}" />
+		<delete dir="${atu_result}" />
+	</target>
+
+
+	<path id="test">
+		<fileset dir="${jar}" includes="*.jar" />
+	</path>
+
+	<target name="makexsltreports" depends="run">
+		<mkdir dir="${home}/XSLT_Reports/output" />
+		<xslt in="${result}/testng-results.xml" style="src/xsltReports/testng-results.xsl" out="${home}/XSLT_Reports/output/index.html" classpathref="test" processor="SaxonLiaison">
+			<param name="testNgXslt.outputDir" expression="${home}/XSLT_Reports/output/" />
+			<param name="testNgXslt.showRuntimeTotals" expression="true" />
+		</xslt>
+	</target>
+
+	<!-- mail.jar, activation-1.1.1.jar, javax.mail.jar (available on jar folder. 
+		You can copy these to ANT_HOME\lib after installing ant) Make sure above 
+		3 are on Ant class path. Window == Preferences == Ant == Runtime == Classpath 
+		Add these 3 to jar file then add to ant class path as mentioned above. Similarly 
+		to run ant from comamnd line make above 3 are on ANT_HOME\lib -->
+
+	<target description="Generates And Send TestNG Reports" name="send-report" depends="run, makexsltreports">
+
+		<copy todir="C:/HasanReport/CitiBankReport/ATU_Report">
+			<fileset dir="${home}/ATU_Report" includes="**" />
+		</copy>
+
+		<!--<copy todir="C:/HasanReport/XSLT_Reports">
+			<fileset dir="${home}/XSLT_Reports/output" includes="**" />
+		</copy>-->
+
+	</target>
+</project>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [CitiBankTest Test Suite]">
+  <parameter name="browser" value="firefox"/>
+  <listeners>
+    <listener class-name="atu.testng.reports.listeners.ATUReportsListener"/>
+    <listener class-name="atu.testng.reports.listeners.ConfigurationListener"/>
+    <listener class-name="atu.testng.reports.listeners.MethodListener"/>
+  </listeners>
+  <test name="Tests Using firefox(failed)">
+    <parameter name="browser" value="firefox"/>
+    <classes>
+      <class name="com.tests.CitiBankTest">
+        <methods>
+          <include name="testcase1"/>
+          <include name="LaunchBrowser"/>
+        </methods>
+      </class> <!-- com.tests.CitiBankTest -->
+    </classes>
+  </test> <!-- Tests Using firefox(failed) -->
+</suite> <!-- Failed suite [CitiBankTest Test Suite] -->
